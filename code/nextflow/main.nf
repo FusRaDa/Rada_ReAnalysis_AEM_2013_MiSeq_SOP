@@ -50,10 +50,9 @@ include { MOTHUR_UNIFRAC } from './modules/5_analysis/phylogeny/mothur_unifrac.n
 
 // Primary inputs
 params.raw_data_dir = 'data/raw'
-
-// params.ref_file = 'data/silva.bacteria/silva.bacteria/silva.bacteria.fasta'
-// params.train_dir = 'data/trainset9_032012.pds'
-
+params.ref_file = 'data/references/silva.seed.align'
+params.train_fasta = 'data/references/trainset14_032015.pds.fasta'
+params.train_tax = 'data/references/trainset14_032015.pds.tax'
 
 workflow {
     // Channel data/input directory
@@ -74,64 +73,65 @@ workflow {
     /*** REDUCING SEQUENCING & PCR ERRORS ***/
 
 
-    // /*** PROCESSING IMPROVED SEQUENCES ***/
-    // // Remove duplicate sequences
-    // MOTHUR_UNIQUE_SEQS(MOTHUR_SUMMARY_SCREEN_SEQS.out.stability)
+    /*** PROCESSING IMPROVED SEQUENCES ***/
+    // Remove duplicate sequences
+    MOTHUR_UNIQUE_SEQS(MOTHUR_SUMMARY_SCREEN_SEQS.out.stability)
 
-    // // Channel from reference alignment file; Align unique sequences to ref alignments
-    // ref_ch = channel.fromPath(params.ref_file)
-    // MOTHUR_PCR_SEQS(MOTHUR_UNIQUE_SEQS.out.stability, ref_ch)
+    // Channel from reference alignment file; Align unique sequences to ref alignments
+    ref_ch = channel.fromPath(params.ref_file)
+    //MOTHUR_PCR_SEQS(MOTHUR_UNIQUE_SEQS.out.stability, ref_ch)
 
-    // // Align sequences to customized reference that will also save storage space
-    // MOTHUR_ALIGN_SCREEN_SEQS(MOTHUR_PCR_SEQS.out.silva, MOTHUR_UNIQUE_SEQS.out.stability)
+    // Align sequences to customized reference that will also save storage space
+    MOTHUR_ALIGN_SCREEN_SEQS(MOTHUR_UNIQUE_SEQS.out.stability, ref_ch)
 
-    // // Select the sequences overlapping the v4 region and remove character gaps
-    // MOTHUR_FILTER_UNIQUE_SEQS(MOTHUR_ALIGN_SCREEN_SEQS.out.stability)
+    // Select the sequences overlapping the v4 region and remove character gaps
+    MOTHUR_FILTER_UNIQUE_SEQS(MOTHUR_ALIGN_SCREEN_SEQS.out.stability)
 
-    // // Pre-cluster sequences - de-noise
-    // MOTHER_PRE_CLUSTER(MOTHUR_FILTER_UNIQUE_SEQS.out.stability)
+    // Pre-cluster sequences - de-noise
+    MOTHER_PRE_CLUSTER(MOTHUR_FILTER_UNIQUE_SEQS.out.stability)
 
-    // // Remove chimeras with vsearch algo (heuristic) - do results differ??
-    // MOTHUR_CHIMERA_VSEARCH(MOTHER_PRE_CLUSTER.out.stability)
+    // Remove chimeras with vsearch algo (heuristic) - do results differ??
+    MOTHUR_CHIMERA_VSEARCH(MOTHER_PRE_CLUSTER.out.stability)
 
-    // // Classify sequences with Bayesian classifier
-    // train_ch = channel.fromPath(params.train_dir)
-    // MOTHUR_CLASSIFY(MOTHUR_CHIMERA_VSEARCH.out.stability, train_ch)
+    // Classify sequences with Bayesian classifier
+    train_fasta_ch = channel.fromPath(params.train_fasta)
+    train_tax_ch = channel.fromPath(params.train_tax)
+    MOTHUR_CLASSIFY(MOTHUR_CHIMERA_VSEARCH.out.stability, train_fasta_ch, train_tax_ch)
 
-    // // Remove lineage/undesirables and summarize taxonomy
-    // MOTHUR_REMOVE_LINEAGE(MOTHUR_CLASSIFY.out.stability, MOTHUR_CHIMERA_VSEARCH.out.stability)
-    // /*** PROCESSING IMPROVED SEQUENCES  ***/
-
-
-    // /*** ASSESSING ERROR RATES ***/
-    // // Measure error rates using mock data
-    // MOTHUR_GET_GROUPS(MOTHUR_REMOVE_LINEAGE.out.stability, data_ch)
-
-    // // Get error rates
-    // MOTHUR_SEQ_ERROR(MOTHUR_GET_GROUPS.out.stability, data_ch)
-
-    // // Cluster sequences into OTU's
-    // MOTHUR_SEQ_OTU(MOTHUR_GET_GROUPS.out.stability, data_ch)
-    // /*** ASSESSING ERROR RATES ***/
+    // Remove lineage/undesirables and summarize taxonomy
+    MOTHUR_REMOVE_LINEAGE(MOTHUR_CLASSIFY.out.stability, MOTHUR_CHIMERA_VSEARCH.out.stability)
+    /*** PROCESSING IMPROVED SEQUENCES  ***/
 
 
-    // /*** PREPARING FOR ANALYSIS ***/
-    // // Remove mock samples/groups
-    // MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
+    /*** ASSESSING ERROR RATES ***/
+    // Measure error rates using mock data
+    MOTHUR_GET_GROUPS(MOTHUR_REMOVE_LINEAGE.out.stability, data_ch)
 
-    // /* OTU */
-    // // Cluster sequences into OTU's - do results differ?? 
-    // MOTHUR_CLUSTER_OTU(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // Get error rates
+    MOTHUR_SEQ_ERROR(MOTHUR_GET_GROUPS.out.stability, data_ch)
 
-    // // Split sequences into bins and then cluster within each bin
-    // MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // Cluster sequences into OTU's
+    MOTHUR_SEQ_OTU(MOTHUR_GET_GROUPS.out.stability, data_ch)
+    /*** ASSESSING ERROR RATES ***/
 
-    // // Define how many sequences are in each OTU from each group cuttoff level at 0.03
-    // MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Define concensus taxonomy for each OTU
-    // MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // /* OTU */
+    /*** PREPARING FOR ANALYSIS ***/
+    // Remove mock samples/groups
+    MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
+
+    /* OTU */
+    // Cluster sequences into OTU's - do results differ?? 
+    MOTHUR_CLUSTER_OTU(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+
+    // Split sequences into bins and then cluster within each bin
+    MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+
+    // Define how many sequences are in each OTU from each group cuttoff level at 0.03
+    MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+
+    // Define concensus taxonomy for each OTU
+    MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    /* OTU */
 
     // /* ASV */
     // // Generate shared file for ASV
@@ -156,49 +156,49 @@ workflow {
     // // Calculate phylogenetic diversity, unifrac commands, tree generation
     // MOTHUR_DIST_SEQS_CLEARCUT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
     // /* Phylogenetic */
-    // /*** PREPARING FOR ANALYSIS ***/
+    /*** PREPARING FOR ANALYSIS ***/
 
 
-    // /*** ANALYSIS ***/
+    /*** ANALYSIS ***/
 
-    // // Determine how many sequences are in each sample 
-    // MOTHUR_COUNT_GROUPS(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    // Determine how many sequences are in each sample 
+    MOTHUR_COUNT_GROUPS(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // // Generate subsampled files for analysis
-    // MOTHUR_SUB_SAMPLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    // Generate subsampled files for analysis
+    MOTHUR_SUB_SAMPLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
 
-    // /** OTU **/
-    // /* ALPHA DIVERSITY */ 
-    // // Analyze alpha diversity of samples - use favorite graphing software
-    // MOTHUR_RAREFACTION_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    /** OTU **/
+    /* ALPHA DIVERSITY */ 
+    // Analyze alpha diversity of samples - use favorite graphing software
+    MOTHUR_RAREFACTION_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // //graph rarefaction output file here
+    //graph rarefaction output file here
 
-    // // Generate table containing the number of sequences, the sample coverage, the number of observed OTUs, and the Inverse Simpson diversity estimate.
-    // MOTHUR_SUMMARY_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
-    // /* ALPHA DIVERSITY */ 
+    // Generate table containing the number of sequences, the sample coverage, the number of observed OTUs, and the Inverse Simpson diversity estimate.
+    MOTHUR_SUMMARY_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    /* ALPHA DIVERSITY */ 
 
-    // /* BETA DIVERSITY MEASUREMENTS */ 
-    // // Calculate similarity of the membership and structure in various samples
-    // MOTHUR_DIST_SHARED(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    /* BETA DIVERSITY MEASUREMENTS */ 
+    // Calculate similarity of the membership and structure in various samples
+    MOTHUR_DIST_SHARED(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // // Construct PCOA (Principal Coordinates) plots
-    // MOTHUR_PCOA_NMDS(MOTHUR_DIST_SHARED.out.fin)
+    // Construct PCOA (Principal Coordinates) plots
+    MOTHUR_PCOA_NMDS(MOTHUR_DIST_SHARED.out.fin)
 
-    // // Determine if clustering within the ordinations is statistically significant using AMOVA
-    // MOTHUR_AMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+    // Determine if clustering within the ordinations is statistically significant using AMOVA
+    MOTHUR_AMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
 
-    // // Determine if variation in the early samples is significantly different from the variation in the late samples
-    // MOTHUR_HOMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+    // Determine if variation in the early samples is significantly different from the variation in the late samples
+    MOTHUR_HOMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
 
-    // // Determine what OTUs are responsible for shifting the samples along the two axes
-    // MOTHUR_CORR_AXES(MOTHUR_SUB_SAMPLE.out.fin, MOTHUR_PCOA_NMDS.out.fin)
+    // Determine what OTUs are responsible for shifting the samples along the two axes
+    MOTHUR_CORR_AXES(MOTHUR_SUB_SAMPLE.out.fin, MOTHUR_PCOA_NMDS.out.fin)
 
-    // // See if the data can be partitioned in to seperate community types
-    // MOTHUR_GET_COMMUNITY(MOTHUR_SUB_SAMPLE.out.fin)
-    // /* BETA DIVERSITY MEASUREMENTS */ 
-    // /** OTU **/
+    // See if the data can be partitioned in to seperate community types
+    MOTHUR_GET_COMMUNITY(MOTHUR_SUB_SAMPLE.out.fin)
+    /* BETA DIVERSITY MEASUREMENTS */ 
+    /** OTU **/
 
 
     // /** POPULATION-LEVEL ANALYSIS **/ 
@@ -210,12 +210,12 @@ workflow {
     // /** POPULATION-LEVEL ANALYSIS **/ 
 
 
-    // /** ASV-BASED ANALYSIS **/ 
-    // /** ASV-BASED ANALYSIS **/ 
+    /** ASV-BASED ANALYSIS **/ 
+    /** ASV-BASED ANALYSIS **/ 
 
 
-    // /** PHYLOTYPE-BASED ANALYSIS **/ 
-    // /** PHYLOTYPE-BASED ANALYSIS **/ 
+    /** PHYLOTYPE-BASED ANALYSIS **/ 
+    /** PHYLOTYPE-BASED ANALYSIS **/ 
 
 
     // /** PHYLOGENY-BASED ANALYSIS **/ 
@@ -230,8 +230,6 @@ workflow {
     // // Refer back to analyzing beta diversity in OTU example...
     // /** PHYLOGENY-BASED ANALYSIS **/ 
 
-    // /*** ANALYSIS ***/
-
-
+    /*** ANALYSIS ***/
 
 }

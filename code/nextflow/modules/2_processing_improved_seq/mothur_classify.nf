@@ -13,13 +13,12 @@
 
 
 process MOTHUR_CLASSIFY{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/2_processing_improved_seq', mode: 'symlink'
+    publishDir 'data/mothur/2_processing_improved_seq', mode: 'symlink'
 
     input:
         path input_done
-        path train_ref
+        path input_train_fasta
+        path input_train_tax
 
     output:
         path "stability*", emit: stability
@@ -27,7 +26,6 @@ process MOTHUR_CLASSIFY{
     script:
     """
     #!/bin/bash
-    cp -a ${train_ref}/. .
-    mothur "#classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax)"
+    mothur "#classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=${input_train_fasta} taxonomy=${input_train_tax})"
     """
 }
