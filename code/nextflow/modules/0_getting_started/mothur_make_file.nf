@@ -21,5 +21,6 @@ process MOTHUR_MAKE_FILE{
     """
     #!/bin/bash
     mothur "#make.file(inputdir=${input_dir}, type=gz, prefix=stability)"
+    mv raw/stability* .
     """
 }

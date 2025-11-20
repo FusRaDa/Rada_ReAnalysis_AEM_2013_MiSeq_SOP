@@ -11,9 +11,7 @@
 
 
 process MOTHUR_UNIQUE_SEQS{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/2_processing_improved_seq', mode: 'symlink'
+    publishDir 'data/mothur/2_processing_improved_seq', mode: 'symlink'
 
     input:
         path input_done

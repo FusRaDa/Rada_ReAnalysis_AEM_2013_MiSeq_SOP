@@ -3,7 +3,6 @@ RadaReAnalysis_AEM_2013 - November 17, 2025
 Christopher M. Rada's attempt for the Riffomonas tutorial by the Schloss lab: https://riffomonas.org/reproducible_research/organization/#p17
 
 
-
 ## Re-analysis of Kozich dataset
 **Scaling up.** The advantage of the dual-index approach is that a large number of samples
 can be sequenced using a number of primers equal to only twice the square root of the
@@ -26,7 +25,6 @@ spurious OTUs). Similar to our previous results, ordination of the mouse fecal s
 again showed the separation between the early and late periods and increased stabilization
 with age (Fig. 4) (Mantel test coefficient, 0.81; P < 0.001). These results clearly
 indicate that our approach can be scaled to multiplex large numbers of samples.
-
 
 
 ### Overview
@@ -67,6 +65,14 @@ indicate that our approach can be scaled to multiplex large numbers of samples.
 
 
 ### How to regenerate this repository
+1. Install mothur (v1.48.4) and add the following code to your enviromental variable file (such as .bashrc):
+	1. export PATH=$PATH:/home/mrada/mothur
+2. Run download.bash command in terminal:
+	2. bash download.bash
+3. Download Nextflow
+	3. Refer to this: https://www.nextflow.io/docs/latest/install.html
+4. Run pipeline using code in terminal:
+	4. nextflow run code/nextflow/main.nf
 
 #### Dependencies and locations
 * Gnu Make should be located in the user's PATH
@@ -76,11 +82,3 @@ indicate that our approach can be scaled to multiplex large numbers of samples.
   * `knitr`
   * `rmarkdown`
 * Nextflow (25.04.6 build 5954)
-
-
-#### Running analysis
-
-```
-git clone https://github.com/SchlossLab/LastName_BriefDescription_Journal_Year.git
-make write.paper
-```

@@ -49,14 +49,15 @@ include { MOTHUR_UNIFRAC } from './modules/5_analysis/phylogeny/mothur_unifrac.n
 
 
 // Primary inputs
-params.data_dir = 'data/raw'
-params.ref_file = 'data/silva.bacteria/silva.bacteria/silva.bacteria.fasta'
-params.train_dir = 'data/trainset9_032012.pds'
+params.raw_data_dir = 'data/raw'
+
+// params.ref_file = 'data/silva.bacteria/silva.bacteria/silva.bacteria.fasta'
+// params.train_dir = 'data/trainset9_032012.pds'
 
 
 workflow {
     // Channel data/input directory
-    data_ch = channel.fromPath(params.data_dir)
+    data_ch = channel.fromPath(params.raw_data_dir)
 
     /*** GETTING STARTED ***/
     // Create stability.files from fastq files in directory MiSeq_SOP
@@ -64,14 +65,13 @@ workflow {
     /*** GETTING STARTED ***/
 
 
+    /*** REDUCING SEQUENCING & PCR ERRORS ***/
+    // Process stability files
+    MOTHUR_MAKE_CONTIGS(MOTHUR_MAKE_FILE.out.stability, data_ch)
 
-    // /*** REDUCING SEQUENCING & PCR ERRORS ***/
-    // // Process stability files
-    // MOTHUR_MAKE_CONTIGS(MOTHUR_MAKE_FILE.out.stability, data_ch)
-
-    // // Summary and screen (cleaning) of contig sequences
-    // MOTHUR_SUMMARY_SCREEN_SEQS(MOTHUR_MAKE_CONTIGS.out.stability)
-    // /*** REDUCING SEQUENCING & PCR ERRORS ***/
+    // Summary and screen (cleaning) of contig sequences
+    MOTHUR_SUMMARY_SCREEN_SEQS(MOTHUR_MAKE_CONTIGS.out.stability)
+    /*** REDUCING SEQUENCING & PCR ERRORS ***/
 
 
     // /*** PROCESSING IMPROVED SEQUENCES ***/
@@ -230,5 +230,8 @@ workflow {
     // // Refer back to analyzing beta diversity in OTU example...
     // /** PHYLOGENY-BASED ANALYSIS **/ 
 
-    /*** ANALYSIS ***/
+    // /*** ANALYSIS ***/
+
+
+
 }
