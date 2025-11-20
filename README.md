@@ -3,10 +3,6 @@ RadaReAnalysis_AEM_2013 - November 17, 2025
 Christopher M. Rada's attempt for the Riffomonas tutorial by the Schloss lab: https://riffomonas.org/reproducible_research/organization/#p17
 
 
-## Tech
-- Nextflow
-- Mothur version=1.48.4
-
 
 ## Re-analysis of Kozich dataset
 **Scaling up.** The advantage of the dual-index approach is that a large number of samples
@@ -74,12 +70,12 @@ indicate that our approach can be scaled to multiplex large numbers of samples.
 
 #### Dependencies and locations
 * Gnu Make should be located in the user's PATH
-* mothur (v1.XX.0) should be located in the user's PATH
+* mothur (v1.48.4) should be located in the user's PATH
 * R (v. 3.X.X) should be located in the user's PATH
 * R packages:
   * `knitr`
   * `rmarkdown`
-* etc
+* Nextflow (25.04.6 build 5954)
 
 
 #### Running analysis

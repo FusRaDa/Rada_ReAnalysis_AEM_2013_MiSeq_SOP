@@ -49,7 +49,7 @@ include { MOTHUR_UNIFRAC } from './modules/5_analysis/phylogeny/mothur_unifrac.n
 
 
 // Primary inputs
-params.data_dir = 'data/MiSeq_SOP'
+params.data_dir = 'data/raw'
 params.ref_file = 'data/silva.bacteria/silva.bacteria/silva.bacteria.fasta'
 params.train_dir = 'data/trainset9_032012.pds'
 
