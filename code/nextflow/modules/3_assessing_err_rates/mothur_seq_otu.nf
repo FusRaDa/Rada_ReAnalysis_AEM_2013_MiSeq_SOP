@@ -26,9 +26,11 @@ process MOTHUR_SEQ_OTU{
     script:
     """
     #!/bin/bash
-    mothur "#dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.fasta, cutoff=0.03)"
-    mothur "#cluster(column=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.dist, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)"
-    mothur "#make.shared(list=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.opti_mcc.list, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, label=0.03)"
-    mothur "#rarefaction.single(shared=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.opti_mcc.shared)"
+    mothur "#
+        dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.fasta, cutoff=0.03);
+        cluster(column=current, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table);
+        make.shared(list=current, count=current, label=0.03);
+        rarefaction.single(shared=current)
+        "
     """
 }

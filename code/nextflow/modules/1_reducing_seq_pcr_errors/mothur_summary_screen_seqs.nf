@@ -24,7 +24,9 @@ process MOTHUR_SUMMARY_SCREEN_SEQS{
     script:
     """
     #!/bin/bash
-    mothur "#summary.seqs(fasta=stability.trim.contigs.fasta, count=stability.contigs.count_table)"
-    mothur "#screen.seqs(fasta=stability.trim.contigs.fasta, count=stability.contigs.count_table, maxambig=0, maxlength=275, maxhomop=8)"
+    mothur "#
+        summary.seqs(fasta=stability.trim.contigs.fasta, count=stability.contigs.count_table);
+        screen.seqs(fasta=current, count=current, maxambig=0, maxlength=275, maxhomop=8)
+        "
     """
 }

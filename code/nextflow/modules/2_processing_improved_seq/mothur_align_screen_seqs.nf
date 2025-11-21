@@ -28,9 +28,11 @@ process MOTHUR_ALIGN_SCREEN_SEQS{
     script:
     """
     #!/bin/bash
-    mothur "#align.seqs(fasta=stability.trim.contigs.good.unique.fasta, reference=${input_ref})"
-    mothur "#summary.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table)"
-    mothur "#screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, start=1969, end=11551)"
-    mothur "#summary.seqs(fasta=stability.trim.contigs.good.unique.good.align, count=stability.trim.contigs.good.good.count_table)"
+    mothur "#
+        align.seqs(fasta=stability.trim.contigs.good.unique.fasta, reference=${input_ref});
+        summary.seqs(fasta=current, count=stability.trim.contigs.good.count_table);
+        screen.seqs(fasta=current, count=current, start=1969, end=11551);
+        summary.seqs(fasta=current, count=current)
+        "
     """
 }

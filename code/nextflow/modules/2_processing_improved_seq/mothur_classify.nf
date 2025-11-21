@@ -26,6 +26,6 @@ process MOTHUR_CLASSIFY{
     script:
     """
     #!/bin/bash
-    mothur "#classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=${input_train_fasta} taxonomy=${input_train_tax})"
+    mothur "#classify.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=${input_train_fasta}, taxonomy=${input_train_tax})"
     """
 }
