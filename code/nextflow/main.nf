@@ -112,53 +112,48 @@ workflow {
 
     // Get error rates
     MOTHUR_SEQ_ERROR(MOTHUR_GET_GROUPS.out.stability, mock_ch)
-
-    // Cluster sequences into OTU's
-    MOTHUR_SEQ_OTU(MOTHUR_GET_GROUPS.out.stability)
     /*** ASSESSING ERROR RATES ***/
 
 
-    // /*** PREPARING FOR ANALYSIS ***/
-    // // Remove mock samples/groups
-    // MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
+    /*** GET SHARED OTU's ***/
+    // Remove mock samples/groups
+    MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
 
-    // /* OTU */
-    // // Cluster sequences into OTU's - do results differ?? 
-    // MOTHUR_CLUSTER_OTU(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // Split sequences into bins and then cluster within each bin
+    MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    
+    // Define how many sequences are in each OTU from each group cuttoff level at 0.03
+    MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Split sequences into bins and then cluster within each bin
-    // MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // Define concensus taxonomy for each OTU
+    MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    /*** GET SHARED OTU's ***/
 
-    // // Define how many sequences are in each OTU from each group cuttoff level at 0.03
-    // MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Define concensus taxonomy for each OTU
-    // MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // /* OTU */
 
-    // // /* ASV */
-    // // // Generate shared file for ASV
-    // // MOTHUR_MAKE_SHARED_ASV(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* ASV */
+    // // Generate shared file for ASV
+    // MOTHUR_MAKE_SHARED_ASV(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // // Generate concensus taxonomy for each ASV
-    // // MOTHUR_CLASSIFY_ASV(MOTHUR_MAKE_SHARED_ASV.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // // /* ASV */
+    // // Generate concensus taxonomy for each ASV
+    // MOTHUR_CLASSIFY_ASV(MOTHUR_MAKE_SHARED_ASV.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* ASV */
 
-    // // /* Phylotypes */
-    // // // Bin sequences into phylotypes according to taxonomic classification 
-    // // MOTHUR_PHYLOTYPE(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* Phylotypes */
+    // // Bin sequences into phylotypes according to taxonomic classification 
+    // MOTHUR_PHYLOTYPE(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // // Generate shared files for phylotypes
-    // // MOTHUR_MAKE_SHARED_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // Generate shared files for phylotypes
+    // MOTHUR_MAKE_SHARED_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // // Identify OTUs based on phylotypes
-    // // MOTHUR_CLASSIFY_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // // /* Phylotypes */
+    // // Identify OTUs based on phylotypes
+    // MOTHUR_CLASSIFY_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* Phylotypes */
 
-    // // /* Phylogenetic */
-    // // // Calculate phylogenetic diversity, unifrac commands, tree generation
-    // // MOTHUR_DIST_SEQS_CLEARCUT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // // /* Phylogenetic */
+    // /* Phylogenetic */
+    // // Calculate phylogenetic diversity, unifrac commands, tree generation
+    // MOTHUR_DIST_SEQS_CLEARCUT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* Phylogenetic */
     // /*** PREPARING FOR ANALYSIS ***/
 
 
@@ -211,14 +206,6 @@ workflow {
     // // Similar method as metastats to identify outlying OTUs
     // MOTHUR_LEFSE(MOTHUR_SUB_SAMPLE.out.fin, data_ch)
     // /** POPULATION-LEVEL ANALYSIS **/ 
-
-
-    /** ASV-BASED ANALYSIS **/ 
-    /** ASV-BASED ANALYSIS **/ 
-
-
-    /** PHYLOTYPE-BASED ANALYSIS **/ 
-    /** PHYLOTYPE-BASED ANALYSIS **/ 
 
 
     // /** PHYLOGENY-BASED ANALYSIS **/ 

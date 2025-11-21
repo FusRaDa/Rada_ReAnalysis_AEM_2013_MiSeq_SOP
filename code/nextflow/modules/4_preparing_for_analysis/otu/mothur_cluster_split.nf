@@ -15,9 +15,7 @@
 
 
 process MOTHUR_CLUSTER_SPLIT{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/4_preparing_for_analysis/otu', mode: 'symlink'
+    publishDir 'data/mothur/4_get_shared_otus', mode: 'symlink'
 
     input:
         path input_done

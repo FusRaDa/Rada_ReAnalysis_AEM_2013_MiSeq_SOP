@@ -8,26 +8,7 @@
 // To produce files:
 // stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta
 // stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D0.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D1.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D141.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D142.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D143.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D144.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D145.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D146.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D147.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D148.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D149.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D150.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D2.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D3.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D5.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D6.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D7.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D8.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.F3D9.map
-// stability.trim.contigs.good.unique.good.filter.unique.precluster.Mock.map
+// stability.trim.contigs.good.unique.good.filter.unique.precluster.[ID].map
 
 
 process MOTHER_PRE_CLUSTER{

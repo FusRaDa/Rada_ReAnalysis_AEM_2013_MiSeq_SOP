@@ -26,7 +26,6 @@ process MOTHUR_CLUSTER_OTU{
     script:
     """
     #!/bin/bash
-    mothur "#dist.seqs(fasta=final.fasta, cutoff=0.03)"
     mothur "#cluster(column=final.dist, count=final.count_table)"
     """
 }
