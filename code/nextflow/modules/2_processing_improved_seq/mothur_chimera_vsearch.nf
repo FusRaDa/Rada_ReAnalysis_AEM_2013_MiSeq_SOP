@@ -1,5 +1,5 @@
 // This process processes files from MOTHER_PRE_CLUSTER
-// Remove chimeras using vsearch algo to further improve sequences
+// Remove chimeras using uchime algo to further improve sequences
 
 // Files processed:
 // stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table

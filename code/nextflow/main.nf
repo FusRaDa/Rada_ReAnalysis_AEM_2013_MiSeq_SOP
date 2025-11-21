@@ -50,9 +50,11 @@ include { MOTHUR_UNIFRAC } from './modules/5_analysis/phylogeny/mothur_unifrac.n
 
 // Primary inputs
 params.raw_data_dir = 'data/raw'
-params.ref_file = 'data/references/silva.seed.align'
+params.ref_file = 'data/references/silva.v4.align'
 params.train_fasta = 'data/references/trainset14_032015.pds.fasta'
 params.train_tax = 'data/references/trainset14_032015.pds.tax'
+params.mock = 'data/references/HMP_MOCK.v4.fasta'
+
 
 workflow {
     // Channel data/input directory
@@ -104,101 +106,102 @@ workflow {
 
 
     /*** ASSESSING ERROR RATES ***/
+    mock_ch = channel.fromPath(params.mock)
     // Measure error rates using mock data
-    MOTHUR_GET_GROUPS(MOTHUR_REMOVE_LINEAGE.out.stability, data_ch)
+    MOTHUR_GET_GROUPS(MOTHUR_REMOVE_LINEAGE.out.stability)
 
     // Get error rates
-    MOTHUR_SEQ_ERROR(MOTHUR_GET_GROUPS.out.stability, data_ch)
+    MOTHUR_SEQ_ERROR(MOTHUR_GET_GROUPS.out.stability, mock_ch)
 
     // Cluster sequences into OTU's
-    MOTHUR_SEQ_OTU(MOTHUR_GET_GROUPS.out.stability, data_ch)
+    MOTHUR_SEQ_OTU(MOTHUR_GET_GROUPS.out.stability)
     /*** ASSESSING ERROR RATES ***/
 
 
-    /*** PREPARING FOR ANALYSIS ***/
-    // Remove mock samples/groups
-    MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
+    // /*** PREPARING FOR ANALYSIS ***/
+    // // Remove mock samples/groups
+    // MOTHUR_REMOVE_MOCK_SAMPLES(MOTHUR_REMOVE_LINEAGE.out.stability)
 
-    /* OTU */
-    // Cluster sequences into OTU's - do results differ?? 
-    MOTHUR_CLUSTER_OTU(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* OTU */
+    // // Cluster sequences into OTU's - do results differ?? 
+    // MOTHUR_CLUSTER_OTU(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // Split sequences into bins and then cluster within each bin
-    MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // Split sequences into bins and then cluster within each bin
+    // MOTHUR_CLUSTER_SPLIT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // Define how many sequences are in each OTU from each group cuttoff level at 0.03
-    MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // Define how many sequences are in each OTU from each group cuttoff level at 0.03
+    // MOTHUR_MAKE_SHARED_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // Define concensus taxonomy for each OTU
-    MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    /* OTU */
+    // // Define concensus taxonomy for each OTU
+    // MOTHUR_CLASSIFY_OTU(MOTHUR_CLUSTER_SPLIT.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // /* OTU */
 
-    // /* ASV */
-    // // Generate shared file for ASV
-    // MOTHUR_MAKE_SHARED_ASV(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // /* ASV */
+    // // // Generate shared file for ASV
+    // // MOTHUR_MAKE_SHARED_ASV(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Generate concensus taxonomy for each ASV
-    // MOTHUR_CLASSIFY_ASV(MOTHUR_MAKE_SHARED_ASV.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // /* ASV */
+    // // // Generate concensus taxonomy for each ASV
+    // // MOTHUR_CLASSIFY_ASV(MOTHUR_MAKE_SHARED_ASV.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // /* ASV */
 
-    // /* Phylotypes */
-    // // Bin sequences into phylotypes according to taxonomic classification 
-    // MOTHUR_PHYLOTYPE(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // /* Phylotypes */
+    // // // Bin sequences into phylotypes according to taxonomic classification 
+    // // MOTHUR_PHYLOTYPE(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Generate shared files for phylotypes
-    // MOTHUR_MAKE_SHARED_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // // Generate shared files for phylotypes
+    // // MOTHUR_MAKE_SHARED_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
 
-    // // Identify OTUs based on phylotypes
-    // MOTHUR_CLASSIFY_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // /* Phylotypes */
+    // // // Identify OTUs based on phylotypes
+    // // MOTHUR_CLASSIFY_PHYLOTYPES(MOTHUR_PHYLOTYPE.out.fin, MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // /* Phylotypes */
 
-    // /* Phylogenetic */
-    // // Calculate phylogenetic diversity, unifrac commands, tree generation
-    // MOTHUR_DIST_SEQS_CLEARCUT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
-    // /* Phylogenetic */
-    /*** PREPARING FOR ANALYSIS ***/
-
-
-    /*** ANALYSIS ***/
-
-    // Determine how many sequences are in each sample 
-    MOTHUR_COUNT_GROUPS(MOTHUR_MAKE_SHARED_OTU.out.fin)
-
-    // Generate subsampled files for analysis
-    MOTHUR_SUB_SAMPLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    // // /* Phylogenetic */
+    // // // Calculate phylogenetic diversity, unifrac commands, tree generation
+    // // MOTHUR_DIST_SEQS_CLEARCUT(MOTHUR_REMOVE_MOCK_SAMPLES.out.fin)
+    // // /* Phylogenetic */
+    // /*** PREPARING FOR ANALYSIS ***/
 
 
-    /** OTU **/
-    /* ALPHA DIVERSITY */ 
-    // Analyze alpha diversity of samples - use favorite graphing software
-    MOTHUR_RAREFACTION_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    // /*** ANALYSIS ***/
 
-    //graph rarefaction output file here
+    // // Determine how many sequences are in each sample 
+    // MOTHUR_COUNT_GROUPS(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // Generate table containing the number of sequences, the sample coverage, the number of observed OTUs, and the Inverse Simpson diversity estimate.
-    MOTHUR_SUMMARY_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
-    /* ALPHA DIVERSITY */ 
+    // // Generate subsampled files for analysis
+    // MOTHUR_SUB_SAMPLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    /* BETA DIVERSITY MEASUREMENTS */ 
-    // Calculate similarity of the membership and structure in various samples
-    MOTHUR_DIST_SHARED(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // Construct PCOA (Principal Coordinates) plots
-    MOTHUR_PCOA_NMDS(MOTHUR_DIST_SHARED.out.fin)
+    // /** OTU **/
+    // /* ALPHA DIVERSITY */ 
+    // // Analyze alpha diversity of samples - use favorite graphing software
+    // MOTHUR_RAREFACTION_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // Determine if clustering within the ordinations is statistically significant using AMOVA
-    MOTHUR_AMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+    // //graph rarefaction output file here
 
-    // Determine if variation in the early samples is significantly different from the variation in the late samples
-    MOTHUR_HOMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+    // // Generate table containing the number of sequences, the sample coverage, the number of observed OTUs, and the Inverse Simpson diversity estimate.
+    // MOTHUR_SUMMARY_SINGLE(MOTHUR_MAKE_SHARED_OTU.out.fin)
+    // /* ALPHA DIVERSITY */ 
 
-    // Determine what OTUs are responsible for shifting the samples along the two axes
-    MOTHUR_CORR_AXES(MOTHUR_SUB_SAMPLE.out.fin, MOTHUR_PCOA_NMDS.out.fin)
+    // /* BETA DIVERSITY MEASUREMENTS */ 
+    // // Calculate similarity of the membership and structure in various samples
+    // MOTHUR_DIST_SHARED(MOTHUR_MAKE_SHARED_OTU.out.fin)
 
-    // See if the data can be partitioned in to seperate community types
-    MOTHUR_GET_COMMUNITY(MOTHUR_SUB_SAMPLE.out.fin)
-    /* BETA DIVERSITY MEASUREMENTS */ 
-    /** OTU **/
+    // // Construct PCOA (Principal Coordinates) plots
+    // MOTHUR_PCOA_NMDS(MOTHUR_DIST_SHARED.out.fin)
+
+    // // Determine if clustering within the ordinations is statistically significant using AMOVA
+    // MOTHUR_AMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+
+    // // Determine if variation in the early samples is significantly different from the variation in the late samples
+    // MOTHUR_HOMOVA(MOTHUR_DIST_SHARED.out.fin, data_ch)
+
+    // // Determine what OTUs are responsible for shifting the samples along the two axes
+    // MOTHUR_CORR_AXES(MOTHUR_SUB_SAMPLE.out.fin, MOTHUR_PCOA_NMDS.out.fin)
+
+    // // See if the data can be partitioned in to seperate community types
+    // MOTHUR_GET_COMMUNITY(MOTHUR_SUB_SAMPLE.out.fin)
+    // /* BETA DIVERSITY MEASUREMENTS */ 
+    // /** OTU **/
 
 
     // /** POPULATION-LEVEL ANALYSIS **/ 

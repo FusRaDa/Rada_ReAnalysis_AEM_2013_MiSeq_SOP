@@ -15,13 +15,10 @@
 
 
 process MOTHUR_SEQ_OTU{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/3_assessing_err_rates', mode: 'symlink'
+    publishDir 'data/mothur/3_assessing_err_rates', mode: 'symlink'
 
     input:
         path input_done
-        path input_dir
 
     output:
         path "stability*", emit: stability
@@ -29,7 +26,6 @@ process MOTHUR_SEQ_OTU{
     script:
     """
     #!/bin/bash
-    cp -a ${input_dir}/. .
     mothur "#dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.fasta, cutoff=0.03)"
     mothur "#cluster(column=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.dist, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table)"
     mothur "#make.shared(list=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.opti_mcc.list, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, label=0.03)"
