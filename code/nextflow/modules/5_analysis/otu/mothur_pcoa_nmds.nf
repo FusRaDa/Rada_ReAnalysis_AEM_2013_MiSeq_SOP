@@ -13,9 +13,7 @@
 
 
 process MOTHUR_PCOA_NMDS{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/5_analysis/otu', mode: 'symlink'
+    publishDir 'data/mothur/5_get_nmds_data', mode: 'symlink'
 
     input:
         path input_done
@@ -26,9 +24,6 @@ process MOTHUR_PCOA_NMDS{
     script:
     """
     #!/bin/bash
-    mothur "#pcoa(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist)"
-    mothur "#nmds(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist)"
-    # Test nmds 3 dimensional
-    # mothur "#nmds(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist, mindim=3, maxdim=3)"
+    mothur "#nmds(phylip=final.opti_mcc.braycurtis.0.03.lt.ave.dist, maxdim=2)"
     """
 }

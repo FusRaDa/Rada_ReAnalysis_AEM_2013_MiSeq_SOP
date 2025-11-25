@@ -12,9 +12,7 @@
 
 
 process MOTHUR_DIST_SHARED{
-    container 'community.wave.seqera.io/library/mothur:1.48.3--8c30967de5ffe410'
-
-    publishDir 'results/5_analysis/otu', mode: 'symlink'
+    publishDir 'data/mothur/5_get_nmds_data', mode: 'symlink'
 
     input:
         path input_done

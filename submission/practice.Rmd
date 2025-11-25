@@ -1,0 +1,10 @@
+---
+title: Reproducing Kozich et al
+author: Joe Schmo
+date: "February 30, 2017"
+output: html_document
+---
+**Scaling up.** The advantage of the dual-index approach is that a large
+number of samples can be sequenced using a number of primers equal to only
+twice the square root of the number of samples. To fully evaluate this
+<text continues...>

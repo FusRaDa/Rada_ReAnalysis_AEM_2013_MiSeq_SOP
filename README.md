@@ -77,8 +77,9 @@ indicate that our approach can be scaled to multiplex large numbers of samples.
 #### Dependencies and locations
 * Gnu Make should be located in the user's PATH
 * mothur (v1.48.4) should be located in the user's PATH
-* R (v. 3.X.X) should be located in the user's PATH
+* R (v. 4.3.3) should be located in the user's PATH
 * R packages:
   * `knitr`
   * `rmarkdown`
 * Nextflow (25.04.6 build 5954)
+* Pandoc (3.1.3)
