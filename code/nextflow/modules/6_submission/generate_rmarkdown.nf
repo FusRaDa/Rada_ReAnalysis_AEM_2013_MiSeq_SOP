@@ -7,6 +7,8 @@ process GENERATE_RMARKDOWN{
     input:
         path input_doc
         path input_rprofile
+        path input_csl
+        path input_bib
 
     output:
         path "practice*", emit: submission

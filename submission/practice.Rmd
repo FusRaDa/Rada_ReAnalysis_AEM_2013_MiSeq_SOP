@@ -1,10 +1,25 @@
 ---
 title: Reproducing Kozich et al
-author: Joe Schmo
-date: "February 30, 2017"
+author: Christopher M. Rada
+date: "November 24, 2025"
 output: html_document
+bibliography: references.bib
+csl: mbio.csl #Get themes at https://github.com/citation-style-language/styles
 ---
+
 **Scaling up.** The advantage of the dual-index approach is that a large
 number of samples can be sequenced using a number of primers equal to only
 twice the square root of the number of samples. To fully evaluate this
-<text continues...>
+mock community. We generated 4.3 million pairs of sequence reads from the
+16S rRNA gene with an average coverage of 9,913 pairs of reads per sample
+(95% of the samples had more than 2,454 pairs of sequences) using a new
+
+```{r scaling_up, echo = FALSE}
+# your code goes here
+```
+
+<snip>
+Titanium platform [@Schloss2012]. In that study, we observed a clear separation
+<snip>
+**FIG 4** Principal coordinate ordination of YC values [@Yue2005] relating the
+<snip>
